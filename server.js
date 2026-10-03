@@ -2,7 +2,7 @@ const express = require('express');
 const api = express();
 const PORT = 5000;
 
-api.get('/',(res,req)=>{
+api.get('/',(req,res)=>{
     res.send('Servidor Caronte rodando!');
 });
 
