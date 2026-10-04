@@ -46,7 +46,7 @@ api.get('/api/pesquisa/:search', async(req,res)=>{
 
 api.get('/api/buscaLogo/:ticker', async(req,res)=>{
     try{
-        const ticker = req.params.search.toUpperCase();
+        const ticker = req.params.ticker.toUpperCase();
         const sumary = await yFinance.quoteSummary(ticker, {modules:['summaryProfile']});
         const website = resultado.sumary.website;
         if(!sumary){
@@ -59,7 +59,7 @@ api.get('/api/buscaLogo/:ticker', async(req,res)=>{
         console.error(error);
         res.status(500).json({error: error.message});
     }
-})
+});
 
 api.listen(PORT,()=>{
     console.log(`Servidor Caronte rodando na porta ${PORT}`);
