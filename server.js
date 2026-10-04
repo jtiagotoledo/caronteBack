@@ -30,7 +30,7 @@ api.get('/api/cotacao/:ticker',async(req,res)=>{
 
 api.get('/api/pesquisa/:search', async(req,res)=>{
     try{
-        const search = req.params.search;
+        const search = req.params.search.toUpperCase();
         const resultado = await yFinance.search(search);
         if(!resultado){
             return res.status(404).json({error:'A pesquisa não restornou nada!'});
@@ -42,8 +42,7 @@ api.get('/api/pesquisa/:search', async(req,res)=>{
         console.error(error);
         res.status(500).json({error: error.message})
     }
-
-})
+});
 
 api.listen(PORT,()=>{
     console.log(`Servidor Caronte rodando na porta ${PORT}`);
