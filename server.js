@@ -1,9 +1,12 @@
 const express = require('express');
+const path = require('path');
 const YahooFinance = require('yahoo-finance2').default;
 const api = express();
 const PORT = 5000;
 
 const yFinance = new YahooFinance();
+
+api.use('/api/logos', express.static(path.join(__dirname, 'public/logos')));
 
 api.get('/api',(req,res)=>{
     res.send('Servidor Caronte rodando!');
