@@ -48,12 +48,12 @@ api.get('/api/buscaLogo/:ticker', async(req,res)=>{
     try{
         const ticker = req.params.ticker.toUpperCase();
         const sumary = await yFinance.quoteSummary(ticker, {modules:['summaryProfile']});
-        const website = resultado.sumary.website;
-        if(!sumary){
+        if(!sumary || !sumary.summaryProfile){
             return res.status(404).json({error:'Não foi encontrado os dados do ticker'});
         }
+        const website = sumary.summaryProfile.website;
         res.json({
-            site: website
+            site: website || 'Site não informado'
         })
     }catch(error){
         console.error(error);
