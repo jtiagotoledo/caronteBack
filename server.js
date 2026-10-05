@@ -21,15 +21,16 @@ api.get('/api/cotacao/:ticker',async(req,res)=>{
         }
         res.json({
             ticker: resultado.symbol,
-            price: resultado.regularMarketPrice,
-            currency: resultado.currency,
-            name: resultado.longName||resultado.shortName,
-        })
+            nome: resultado.longName||resultado.shortName,
+            preco: resultado.regularMarketPrice,
+            variacaoPercentual: resultado.regularMarketChangePercent,
+            variacao: resultado.regularMarketChange,
+        });
     }catch(error){
         console.error(error);
         res.status(500).json({error: error.message});
     }
-})
+});
 
 api.get('/api/pesquisa/:search', async(req,res)=>{
     try{
