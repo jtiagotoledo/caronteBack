@@ -43,8 +43,8 @@ api.get('/api/pesquisa/:search', async(req,res)=>{
         console.log('primeiroAtivo',primeiroAtivo);
         
         res.json({
-            nome: primeiroAtivo.longName,
-            ticker: primeiroAtivo.ticker,
+            nome: primeiroAtivo.longname,
+            ticker: primeiroAtivo.simbol,
         })
     }catch(error){
         console.error(error);
