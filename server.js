@@ -40,6 +40,8 @@ api.get('/api/pesquisa/:search', async(req,res)=>{
             return res.status(404).json({error:'A pesquisa não restornou nada!'});
         }
         const primeiroAtivo = resultado.quotes[0];
+        console.log('primeiroAtivo',primeiroAtivo);
+        
         res.json({
             nome: primeiroAtivo.longName,
             ticker: primeiroAtivo.ticker,
