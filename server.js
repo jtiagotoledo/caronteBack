@@ -40,8 +40,8 @@ api.get('/api/pesquisa/:search', async(req,res)=>{
             return res.status(404).json({error:'A pesquisa não restornou nada!'});
         }
         res.json({
-            pesquisa: resultado.quotes.longName,
-            ticker: resultado.quotes.ticker,
+            nome: resultado.longName,
+            ticker: resultado.ticker,
         })
     }catch(error){
         console.error(error);
