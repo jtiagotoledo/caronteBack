@@ -35,7 +35,7 @@ api.get('/api/cotacao/:ticker',async(req,res)=>{
 api.get('/api/pesquisa/:search', async(req,res)=>{
     try{
         const search = req.params.search.toUpperCase();
-        const resultado = await yFinance.search(search);
+        const resultado = await yFinance.search(`${search}.SA`);
         if(!resultado || !resultado.quotes || resultado.quotes.length === 0){
             return res.status(404).json({error:'A pesquisa não restornou nada!'});
         }
@@ -44,7 +44,7 @@ api.get('/api/pesquisa/:search', async(req,res)=>{
         
         res.json({
             nome: primeiroAtivo.longname,
-            ticker: primeiroAtivo.simbol,
+            ticker: primeiroAtivo.symbol,
         })
     }catch(error){
         console.error(error);
