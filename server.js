@@ -36,12 +36,13 @@ api.get('/api/pesquisa/:search', async(req,res)=>{
     try{
         const search = req.params.search.toUpperCase();
         const resultado = await yFinance.search(search);
-        if(!resultado){
+        if(!resultado || !resultado.quotes || resultado.quotes.length === 0){
             return res.status(404).json({error:'A pesquisa não restornou nada!'});
         }
+        const primeiroAtivo = resultado.quotes[0];
         res.json({
-            nome: resultado.longName,
-            ticker: resultado.ticker,
+            nome: primeiroAtivo.longName,
+            ticker: primeiroAtivo.ticker,
         })
     }catch(error){
         console.error(error);
