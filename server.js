@@ -8,66 +8,67 @@ const yFinance = new YahooFinance();
 
 api.use('/api/logos', express.static(path.join(__dirname, 'public/logos')));
 
-api.get('/api',(req,res)=>{
+api.get('/api', (req, res) => {
     res.send('Servidor Caronte rodando!');
 });
 
-api.get('/api/cotacao/:ticker',async(req,res)=>{
-    try{
+api.get('/api/cotacao/:ticker', async (req, res) => {
+    try {
         const ticker = req.params.ticker.toUpperCase();
         const resultado = await yFinance.quote(ticker);
-        if(!resultado){
-            return res.status(404).json({error:'Ativo não encontrado'});
+        if (!resultado) {
+            return res.status(404).json({ error: 'Ativo não encontrado' });
         }
         res.json({
             ticker: resultado.symbol,
-            nome: resultado.longName||resultado.shortName,
+            nome: resultado.longName || resultado.shortName,
             preco: resultado.regularMarketPrice,
             variacaoPercentual: resultado.regularMarketChangePercent,
             variacao: resultado.regularMarketChange,
         });
-    }catch(error){
+    } catch (error) {
         console.error(error);
-        res.status(500).json({error: error.message});
+        res.status(500).json({ error: error.message });
     }
 });
 
-api.get('/api/pesquisa/:search', async(req,res)=>{
-    try{
+api.get('/api/pesquisa/:search', async (req, res) => {
+    try {
         const search = req.params.search.toUpperCase();
         const resultado = await yFinance.search(search);
-        if(!resultado || !resultado.quotes || resultado.quotes.length === 0){
-            return res.status(404).json({error:'A pesquisa não restornou nada!'});
+        if (!resultado || !resultado.quotes || resultado.quotes.length === 0) {
+            return res.status(404).json({ error: 'A pesquisa não restornou nada!' });
         }
-        const primeiroAtivo = resultado.quotes[0];
-        
-        res.json({
-            nome: primeiroAtivo.longname,
-            ticker: primeiroAtivo.symbol,
-        })
-    }catch(error){
+        const ativosFormat = resultado.quotes.map(ativo => ({
+            nome: ativo.longname || ativo.name || 'Nome não disponível',
+            ticker: ativo.symbol,
+        }))
+
+        res.json({ ativosFormat });
+
+    } catch (error) {
         console.error(error);
-        res.status(500).json({error: error.message});
+        res.status(500).json({ error: error.message });
     }
 });
 
-api.get('/api/buscaLogo/:ticker', async(req,res)=>{
-    try{
+api.get('/api/buscaLogo/:ticker', async (req, res) => {
+    try {
         const ticker = req.params.ticker.toUpperCase();
-        const sumary = await yFinance.quoteSummary(ticker, {modules:['summaryProfile']});
-        if(!sumary || !sumary.summaryProfile){
-            return res.status(404).json({error:'Não foi encontrado os dados do ticker'});
+        const sumary = await yFinance.quoteSummary(ticker, { modules: ['summaryProfile'] });
+        if (!sumary || !sumary.summaryProfile) {
+            return res.status(404).json({ error: 'Não foi encontrado os dados do ticker' });
         }
         const website = sumary.summaryProfile.website;
         res.json({
             site: website || 'Site não informado'
         })
-    }catch(error){
+    } catch (error) {
         console.error(error);
-        res.status(500).json({error: error.message});
+        res.status(500).json({ error: error.message });
     }
 });
 
-api.listen(PORT,()=>{
+api.listen(PORT, () => {
     console.log(`Servidor Caronte rodando na porta ${PORT}`);
 });
