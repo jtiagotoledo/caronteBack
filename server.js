@@ -66,7 +66,7 @@ api.get('/api/pesquisa/:search', async (req, res) => {
         }
 
         const ativosFormat = todosAtivos.map(ativo => ({
-            nome: ativo.longName || ativo.shortName || ativo.name || 'Nome não disponével',
+            nome: ativo.longname || ativo.shortname || ativo.name || 'Nome não disponível',
             ticker: ativo.symbol
         }));
 
