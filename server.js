@@ -34,15 +34,41 @@ api.get('/api/cotacao/:ticker', async (req, res) => {
 
 api.get('/api/pesquisa/:search', async (req, res) => {
     try {
-        const search = req.params.search.toUpperCase();
-        const resultado = await yFinance.search(search);
-        if (!resultado || !resultado.quotes || resultado.quotes.length === 0) {
-            return res.status(404).json({ error: 'A pesquisa não restornou nada!' });
+        const termoOriginal = req.params.search.toUpperCase().trim();
+        const termoComSa = req.params.search.endsWith('.SA') ? termoComSa : `${termoComSa}.SA`;
+
+        const [resultadoOriginal, resultadoSa] = await Promise.all([
+            yFinance.search(termoOriginal).catch(() => null),
+            yFinance.search(termoComSa).catch(() => null)
+        ])
+
+        const quotesOriginal = resultadoOriginal?.quotes || [];
+        const quotesSa = resultadoSa?.quotes || [];
+
+        const mapaAtivos = new Map();
+
+        quotesSa.forEach(ativo => {
+            if (ativo && ativo.symbol) {
+                mapaAtivos.set(ativo.symbol, ativo);
+            }
+        });
+
+        quotesOriginal.forEach(ativo => {
+            if (ativo && ativo.symbol && !mapaAtivos.has(ativo.symbol)) {
+                mapaAtivos.set(ativo.symbol, ativo);
+            }
+        });
+
+        const todosAtivos = Array.from(mapaAtivos.values());
+
+        if (todosAtivos.length === 0) {
+            return res.status(404).json({ error: 'A pesquisa não retornou nada!' });
         }
-        const ativosFormat = resultado.quotes.map(ativo => ({
-            nome: ativo.longname || ativo.name || 'Nome não disponível',
-            ticker: ativo.symbol,
-        }))
+
+        const ativosFormat = todosAtivos.map(ativo => ({
+            nome: ativo.longName || ativo.shortName || ativo.name || 'Nome não disponével',
+            ticker: ativo.symbol
+        }));
 
         res.json({ ativosFormat });
 
