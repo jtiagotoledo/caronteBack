@@ -70,7 +70,7 @@ api.get('/api/pesquisa/:search', async (req, res) => {
             ticker: ativo.symbol
         }));
 
-        res.json({ ativosFormat });
+        res.json(ativosFormat);
 
     } catch (error) {
         console.error(error);
