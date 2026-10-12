@@ -35,7 +35,7 @@ api.get('/api/cotacao/:ticker', async (req, res) => {
 api.get('/api/pesquisa/:search', async (req, res) => {
     try {
         const termoOriginal = req.params.search.toUpperCase().trim();
-        const termoComSa = req.params.search.endsWith('.SA') ? termoComSa : `${termoComSa}.SA`;
+        const termoComSa = req.params.search.endsWith('.SA') ? termoOriginal : `${termoOriginal}.SA`;
 
         const [resultadoOriginal, resultadoSa] = await Promise.all([
             yFinance.search(termoOriginal).catch(() => null),
